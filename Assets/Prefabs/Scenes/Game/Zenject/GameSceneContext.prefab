@@ -77,3 +77,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f96204890403ee14b9f09cc83af6d5e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _playerController: {fileID: 0}
+  _cameraController: {fileID: 0}
+  _inGameUi: {fileID: 0}
+  _weaponsContainer: {fileID: 11400000, guid: e403cc9673d10584683e88346526e41d, type: 2}

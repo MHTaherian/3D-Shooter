@@ -1,5 +1,7 @@
 ﻿using System;
+using Scenes.Game.Inventory;
 using Scenes.Game.UI.InGameUI.InputManager;
+using Scenes.Game.Weapons;
 using Zenject;
 using UnityEngine;
 
@@ -8,19 +10,42 @@ namespace Scenes.Game.Player
     public class PlayerController : MonoBehaviour, ITransformGetter
     {
         [SerializeField] private CharacterController _characterController;
-        [SerializeField] private Animator _animator;
         [SerializeField] private float _moveSpeed;
         [SerializeField] private float _turnSpeed;
         [SerializeField] private float _animatorTurnSpeed;
+
+        [Space] [Header("WeaponAttachSlots")] [SerializeField]
+        private Transform _rifleAttachSlot;
+        [SerializeField] private Transform _pistolAttachSlot;
+        
+        [Space] [Header("Animation")] [SerializeField]
+        private Animator _animator;
+        [SerializeField] private AnimatorOverrideController _pistolAnimatorOverride;
+        [SerializeField] private AnimatorOverrideController _rifleAnimatorOverride;
+        
         private Vector2 _moveInputValue;
         private Vector2 _aimInputValue;
         private Camera _mainCamera;
         private float _currentAnimatorTurnSpeed;
+
+        #region AnimatorProperties
+
         private static readonly int ForwardSpeedAnimationProperty = Animator.StringToHash("forwardSpeed");
         private static readonly int RightSpeedAnimationProperty = Animator.StringToHash("rightSpeed");
         private static readonly int TurnSpeedAnimatorProperty = Animator.StringToHash("turnSpeed");
 
+        #endregion
+
+        private InventoryManager _inventoryManager;
+        private Weapon _ownedWeapon;
+
         public event Action<Vector2> PlayerMoved;
+
+        [Inject]
+        private void Init(InventoryManager inventoryManager)
+        {
+            _inventoryManager = inventoryManager;
+        }
 
         private void Start()
         {
@@ -66,14 +91,13 @@ namespace Scenes.Game.Player
             {
                 var previousRotation = transform.rotation;
                 var currentRotation = RotatePlayer(aimDirection);
-
-                var rightAimDirectionRatio = Vector3.Dot(aimDirection, transform.right);
+                var rightAimDirectionRatio = Vector3.Dot(aimDirection, transform.right) > 0 ? 1 : -1;
                 var rotationDelta = Quaternion.Angle(previousRotation, currentRotation) * rightAimDirectionRatio;
                 currentFinalTurnSpeed = rotationDelta / Time.deltaTime;
             }
 
             _currentAnimatorTurnSpeed = Mathf.Lerp(_currentAnimatorTurnSpeed, currentFinalTurnSpeed,
-                Time.deltaTime * _turnSpeed);
+                Time.deltaTime * _animatorTurnSpeed);
             _animator.SetFloat(TurnSpeedAnimatorProperty, _currentAnimatorTurnSpeed);
         }
 
@@ -126,5 +150,46 @@ namespace Scenes.Game.Player
         {
             return transform;
         }
+
+        #region Weapon
+
+        public void AddWeaponToOwnedItems(WeaponType weaponType)
+        {
+            var slotTransform = GetWeaponSlotTransform(weaponType);
+            _inventoryManager.AddWeaponToOwnedWeapons(weaponType, slotTransform);
+        }
+
+        private Transform GetWeaponSlotTransform(WeaponType weaponType)
+        {
+            return weaponType switch
+            {
+                WeaponType.Rifle => _rifleAttachSlot,
+                WeaponType.Pistol => _pistolAttachSlot,
+                _ => throw new ArgumentOutOfRangeException(nameof(weaponType), weaponType, null)
+            };
+        }
+
+        public void SetWeapon(WeaponType weaponType)
+        {
+            if (_ownedWeapon)
+                _ownedWeapon.UnEquip();
+            
+            _animator.runtimeAnimatorController = GetAnimatorOverrideController(weaponType);
+            _ownedWeapon = _inventoryManager.GetWeapon(weaponType);
+            _ownedWeapon.Init(gameObject);
+        }
+
+        private AnimatorOverrideController GetAnimatorOverrideController(WeaponType weaponType)
+        {
+            return weaponType switch
+            {
+                WeaponType.Rifle => _rifleAnimatorOverride,
+                WeaponType.Pistol => _pistolAnimatorOverride,
+                WeaponType.None => default,
+                _ => throw new ArgumentOutOfRangeException(nameof(weaponType), weaponType, null)
+            };
+        }
+
+        #endregion
     }
 }
