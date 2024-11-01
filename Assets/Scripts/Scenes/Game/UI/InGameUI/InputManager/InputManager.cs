@@ -9,5 +9,6 @@ namespace Scenes.Game.UI.InGameUI.InputManager
         /// Invokes a normalized Vector2 used to multiply a factor
         /// </summary>
         public abstract event Action<Vector2> OnInputValueUpdated;
+        public abstract event Action OnInputTapped;
     }
 }

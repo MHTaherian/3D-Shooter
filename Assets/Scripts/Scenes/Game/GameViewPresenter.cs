@@ -1,3 +1,4 @@
+using System;
 using Scenes.Game.GameCamera;
 using Scenes.Game.Inventory;
 using Scenes.Game.Player;
@@ -26,6 +27,7 @@ namespace Scenes.Game
             playerController.PlayerMoved += OnPlayerMoved;
             inGameUi.MoveStickValueUpdated += playerController.OnMoveInputUpdated;
             inGameUi.AimStickValueUpdated += playerController.OnAimInputUpdated;
+            inGameUi.AimStickTapped += playerController.SwitchToNextWeapon;
         }
 
         private void OnPlayerMoved(Vector2 moveInput)

@@ -1,3 +1,4 @@
+using Scenes.Game.Player;
 using UnityEngine;
 using Zenject;
 
@@ -25,8 +26,8 @@ namespace Scenes.Game.Weapons
         {
             gameObject.SetActive(false);
         }
-        
-        public class WeaponFactory : IFactory<WeaponType, Transform, Weapon>
+
+        public class WeaponFactory : IFactory<WeaponTypeWithSlot, Weapon>
         {
             private readonly DiContainer _container;
             private readonly WeaponsContainer _weaponsContainer;
@@ -36,11 +37,12 @@ namespace Scenes.Game.Weapons
                 _container = container;
                 _weaponsContainer = weaponsContainer;
             }
-            
-            public Weapon Create(WeaponType weaponType, Transform parent)
+
+            public Weapon Create(WeaponTypeWithSlot weaponTypeWithSlot)
             {
-                var weaponPrefab = _weaponsContainer.GetWeaponPrefab(weaponType);
-                return _container.InstantiatePrefabForComponent<Weapon>(weaponPrefab.gameObject, parent);
+                var weaponPrefab = _weaponsContainer.GetWeaponPrefab(weaponTypeWithSlot.Type);
+                return _container.InstantiatePrefabForComponent<Weapon>(weaponPrefab.gameObject,
+                    weaponTypeWithSlot.Slot);
             }
         }
     }

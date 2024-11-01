@@ -77,8 +77,11 @@ MonoBehaviour:
   _moveSpeed: 5
   _turnSpeed: 8
   _animatorTurnSpeed: 5
-  _rifleAttachSlot: {fileID: 3687783755037174457}
-  _pistolAttachSlot: {fileID: 4519321212677747320}
+  _weaponTypesWithSlots:
+  - Type: 2
+    Slot: {fileID: 3687783755037174457}
+  - Type: 1
+    Slot: {fileID: 4519321212677747320}
   _animator: {fileID: 3735515125402814419}
   _pistolAnimatorOverride: {fileID: 22100000, guid: 098652673a725744aa0e936b2ba75396,
     type: 2}
@@ -130,7 +133,7 @@ Transform:
   m_GameObject: {fileID: 4663311233348518344}
   serializedVersion: 2
   m_LocalRotation: {x: -0.42991978, y: 0.42062515, z: -0.5074291, w: 0.61705697}
-  m_LocalPosition: {x: 0.035, y: 0.0528, z: -0.0086}
+  m_LocalPosition: {x: 0.054, y: 0.052, z: 0.031}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -146,7 +149,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4519321212677747320}
   m_Layer: 9
-  m_Name: PistolAttachSlot (1)
+  m_Name: PistolAttachSlot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -160,13 +163,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6239677550001038321}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.6810329, y: -0.07149547, z: 0.038198356, w: 0.72775245}
+  m_LocalRotation: {x: -0.63736343, y: -0.25530365, z: 0.23794648, w: 0.68700033}
   m_LocalPosition: {x: 0.0649, y: 0.0454, z: -0.0161}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2545342659714401497}
-  m_LocalEulerAnglesHint: {x: -80.328, y: -68.284, z: 65.576}
+  m_LocalEulerAnglesHint: {x: -48.959, y: -85.004, z: 83.503}
 --- !u!1001 &2545342659714275381
 PrefabInstance:
   m_ObjectHideFlags: 0

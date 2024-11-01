@@ -11,10 +11,12 @@ namespace Scenes.Game.UI.InGameUI
 
         public event Action<Vector2> MoveStickValueUpdated;
         public event Action<Vector2> AimStickValueUpdated;
+        public event Action AimStickTapped;
         private void Awake()
         {
             _moveJoyStick.OnInputValueUpdated += OnMoveJoystickValueUpdated;
             _aimJoyStick.OnInputValueUpdated += OnAimJoystickValueUpdated;
+            _aimJoyStick.OnInputTapped += OnAimJoyStickInputTapped;
         }
 
         private void OnMoveJoystickValueUpdated(Vector2 inputValue)
@@ -25,6 +27,18 @@ namespace Scenes.Game.UI.InGameUI
         private void OnAimJoystickValueUpdated(Vector2 inputValue)
         {
             AimStickValueUpdated?.Invoke(inputValue);
+        }
+
+        private void OnAimJoyStickInputTapped()
+        {
+            AimStickTapped?.Invoke();
+        }
+
+        private void OnDestroy()
+        {
+            _moveJoyStick.OnInputValueUpdated -= OnMoveJoystickValueUpdated;
+            _aimJoyStick.OnInputValueUpdated -= OnAimJoystickValueUpdated;
+            _aimJoyStick.OnInputTapped -= OnAimJoyStickInputTapped;
         }
     }
 }

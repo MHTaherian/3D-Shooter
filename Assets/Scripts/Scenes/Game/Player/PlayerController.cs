@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Linq;
 using Scenes.Game.Inventory;
 using Scenes.Game.UI.InGameUI.InputManager;
 using Scenes.Game.Weapons;
 using Zenject;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Scenes.Game.Player
 {
@@ -14,10 +16,9 @@ namespace Scenes.Game.Player
         [SerializeField] private float _turnSpeed;
         [SerializeField] private float _animatorTurnSpeed;
 
-        [Space] [Header("WeaponAttachSlots")] [SerializeField]
-        private Transform _rifleAttachSlot;
-        [SerializeField] private Transform _pistolAttachSlot;
-        
+        [FormerlySerializedAs("_weaponTypesAndSlots")] [FormerlySerializedAs("_weaponSlots")] [Space] [Header("WeaponAttachSlots")] [SerializeField]
+        private WeaponTypeWithSlot[] _weaponTypesWithSlots;
+
         [Space] [Header("Animation")] [SerializeField]
         private Animator _animator;
         [SerializeField] private AnimatorOverrideController _pistolAnimatorOverride;
@@ -37,7 +38,7 @@ namespace Scenes.Game.Player
         #endregion
 
         private InventoryManager _inventoryManager;
-        private Weapon _ownedWeapon;
+        private Weapon _currentWeapon;
 
         public event Action<Vector2> PlayerMoved;
 
@@ -153,30 +154,34 @@ namespace Scenes.Game.Player
 
         #region Weapon
 
-        public void AddWeaponToOwnedItems(WeaponType weaponType)
+        public void SwitchToNextWeapon()
         {
-            var slotTransform = GetWeaponSlotTransform(weaponType);
-            _inventoryManager.AddWeaponToOwnedWeapons(weaponType, slotTransform);
+            var nextWeaponType = _inventoryManager.GetNextWeaponType(_currentWeapon.WeaponType());
+            SetWeapon(nextWeaponType);
         }
 
-        private Transform GetWeaponSlotTransform(WeaponType weaponType)
+        public void AddWeaponToOwnedItems(WeaponType weaponType)
         {
-            return weaponType switch
+            var weaponTypeWithSlot = _weaponTypesWithSlots.FirstOrDefault(ws => ws.Type == weaponType);
+            if (weaponTypeWithSlot != null)
             {
-                WeaponType.Rifle => _rifleAttachSlot,
-                WeaponType.Pistol => _pistolAttachSlot,
-                _ => throw new ArgumentOutOfRangeException(nameof(weaponType), weaponType, null)
-            };
+                _inventoryManager.AddWeaponToOwnedWeapons(weaponTypeWithSlot);
+            }
+            else
+            {
+                _inventoryManager.AddWeaponToOwnedWeapons(new WeaponTypeWithSlot(weaponType, _weaponTypesWithSlots.First().Slot));
+                Debug.LogError($"There is no slot set for {weaponType.ToString()} type");
+            }
         }
 
         public void SetWeapon(WeaponType weaponType)
         {
-            if (_ownedWeapon)
-                _ownedWeapon.UnEquip();
+            if (_currentWeapon)
+                _currentWeapon.UnEquip();
             
             _animator.runtimeAnimatorController = GetAnimatorOverrideController(weaponType);
-            _ownedWeapon = _inventoryManager.GetWeapon(weaponType);
-            _ownedWeapon.Init(gameObject);
+            _currentWeapon = _inventoryManager.GetWeapon(weaponType);
+            _currentWeapon.Init(gameObject);
         }
 
         private AnimatorOverrideController GetAnimatorOverrideController(WeaponType weaponType)
@@ -191,5 +196,18 @@ namespace Scenes.Game.Player
         }
 
         #endregion
+    }
+
+    [Serializable]
+    public class WeaponTypeWithSlot
+    {
+        public WeaponType Type;
+        public Transform Slot;
+
+        public WeaponTypeWithSlot(WeaponType type, Transform slot)
+        {
+            Type = type;
+            Slot = slot;
+        }
     }
 }
