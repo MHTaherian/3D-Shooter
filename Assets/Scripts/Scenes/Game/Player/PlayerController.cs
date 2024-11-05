@@ -34,6 +34,8 @@ namespace Scenes.Game.Player
         private static readonly int ForwardSpeedAnimationProperty = Animator.StringToHash("forwardSpeed");
         private static readonly int RightSpeedAnimationProperty = Animator.StringToHash("rightSpeed");
         private static readonly int TurnSpeedAnimatorProperty = Animator.StringToHash("turnSpeed");
+        private static readonly int Attacking = Animator.StringToHash("attacking");
+
 
         #endregion
 
@@ -61,6 +63,7 @@ namespace Scenes.Game.Player
         public void OnAimInputUpdated(Vector2 inputValue)
         {
             _aimInputValue = inputValue;
+            _animator.SetBool(Attacking, inputValue.sqrMagnitude > 0);
         }
 
         private void Update()
