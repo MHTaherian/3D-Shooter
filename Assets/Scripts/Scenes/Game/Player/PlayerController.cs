@@ -34,8 +34,8 @@ namespace Scenes.Game.Player
         private static readonly int ForwardSpeedAnimationProperty = Animator.StringToHash("forwardSpeed");
         private static readonly int RightSpeedAnimationProperty = Animator.StringToHash("rightSpeed");
         private static readonly int TurnSpeedAnimatorProperty = Animator.StringToHash("turnSpeed");
-        private static readonly int Attacking = Animator.StringToHash("attacking");
-
+        private static readonly int AttackingAnimatorProperty = Animator.StringToHash("attacking");
+        private static readonly int WeaponSwitchAnimatorProperty = Animator.StringToHash("weaponSwitch");
 
         #endregion
 
@@ -63,7 +63,7 @@ namespace Scenes.Game.Player
         public void OnAimInputUpdated(Vector2 inputValue)
         {
             _aimInputValue = inputValue;
-            _animator.SetBool(Attacking, inputValue.sqrMagnitude > 0);
+            _animator.SetBool(AttackingAnimatorProperty, inputValue.sqrMagnitude > 0);
         }
 
         private void Update()
@@ -157,6 +157,12 @@ namespace Scenes.Game.Player
 
         #region Weapon
 
+        public void StartSwitchingToNextWeapon()
+        {
+            _animator.SetTrigger(WeaponSwitchAnimatorProperty);
+        }
+
+        // Animator Event Function
         public void SwitchToNextWeapon()
         {
             var nextWeaponType = _inventoryManager.GetNextWeaponType(_currentWeapon.WeaponType());
