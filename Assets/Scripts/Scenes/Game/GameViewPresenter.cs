@@ -1,7 +1,10 @@
 using System;
+using Scenes.Game.Framework;
+using Scenes.Game.Framework.Creature;
+using Scenes.Game.Framework.Creature.Containers;
+using Scenes.Game.Framework.Creature.Player;
 using Scenes.Game.GameCamera;
 using Scenes.Game.Inventory;
-using Scenes.Game.Player;
 using Scenes.Game.UI.InGameUI;
 using Scenes.Game.Weapons;
 using UnityEngine;
@@ -11,29 +14,39 @@ namespace Scenes.Game
 {
     public class GameViewPresenter
     {
-        private PlayerController _playerController;
+        private PlayerPresenter _playerPresenter;
+        private readonly Creature.ICreatureFactory _creatureFactory;
         private CameraController _cameraController;
-
-        [Inject]
-        public void Init(PlayerController playerController, CameraController cameraController,
-            InGameUi inGameUi)
+        private GameView _gameView;
+        
+        public GameViewPresenter(Creature.ICreatureFactory creatureFactory, CameraController cameraController,
+            InGameUi inGameUi, GameView gameView)
         {
-            _playerController = playerController;
+            _creatureFactory = creatureFactory;
             _cameraController = cameraController;
-            cameraController.SetTransformToFollow(playerController);
-            playerController.AddWeaponToOwnedItems(WeaponType.Rifle);
-            playerController.AddWeaponToOwnedItems(WeaponType.Pistol);
-            playerController.SetWeapon(WeaponType.Pistol);
-            playerController.PlayerMoved += OnPlayerMoved;
-            inGameUi.MoveStickValueUpdated += playerController.OnMoveInputUpdated;
-            inGameUi.AimStickValueUpdated += playerController.OnAimInputUpdated;
-            inGameUi.AimStickTapped += playerController.StartSwitchingToNextWeapon;
+            _gameView = gameView;
+            _playerPresenter = _creatureFactory.Create<PlayerPresenter>(CreatureType.Human);
+            _playerPresenter.CreateComponent(gameView.GetPlayerSpawnPosition(), gameView.transform);
+            _cameraController.SetTransformToFollow(_playerPresenter.GetPlayerTransformGetter());
+            _playerPresenter.AddWeaponToOwnedItems(WeaponType.Rifle);
+            _playerPresenter.AddWeaponToOwnedItems(WeaponType.Pistol);
+            _playerPresenter.SetWeapon(WeaponType.Pistol);
+            _playerPresenter.PlayerMoved += OnPlayerMoved;
+            _playerPresenter.AttackedTarget += PlayerPresenterOnAttackedTarget;
+            inGameUi.MoveStickValueUpdated += _playerPresenter.OnMoveInputUpdated;
+            inGameUi.AimStickValueUpdated += _playerPresenter.OnAimInputUpdated;
+            inGameUi.AimStickTapped += _playerPresenter.OnAimStickTapped;
         }
 
         private void OnPlayerMoved(Vector2 moveInput)
         {
-            if (_playerController.IsAiming()) return;
+            if (_playerPresenter.IsAiming()) return;
             _cameraController.RotateFrameRateIndependently(moveInput.x);
+        }
+
+        private void PlayerPresenterOnAttackedTarget(GameObject target)
+        {
+            Debug.Log($"Attacked {target}");
         }
     }
 }
