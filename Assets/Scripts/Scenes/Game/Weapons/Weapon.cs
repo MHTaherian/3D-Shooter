@@ -8,6 +8,7 @@ namespace Scenes.Game.Weapons
     public abstract class Weapon : MonoBehaviour
     {
         [SerializeField] private WeaponType _type;
+        [SerializeField] private float _damagePerBullet;
         [SerializeField] private Transform _muzzle;
         [SerializeField] private float _maxRange = 1000;
         [SerializeField] private LayerMask _enemyMask;
@@ -52,6 +53,8 @@ namespace Scenes.Game.Weapons
             var shotATarget = _targetingManager.TryGetTargetObject(out targetObject);
             return shotATarget;
         }
+
+        public float DamagePerBullet => _damagePerBullet;
 
         public class WeaponFactory : IFactory<WeaponTypeWithSlot, Weapon>
         {

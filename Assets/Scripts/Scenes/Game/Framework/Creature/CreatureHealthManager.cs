@@ -34,9 +34,9 @@ namespace Scenes.Game.Framework.Creature
                 amount = _maxHealth - _health;
                 _health = _maxHealth;
             }
-            OnHealthChanged?.Invoke(amount, _health);
+            OnHealthChanged?.Invoke(amount);
         }
     }
 
-    public delegate void HealthChangeDelegate(float healthChangeAmount, float finalHealth);
+    public delegate void HealthChangeDelegate(float healthChangeAmount);
 }

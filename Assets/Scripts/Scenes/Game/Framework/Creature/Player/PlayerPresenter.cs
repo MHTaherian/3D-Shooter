@@ -15,7 +15,7 @@ namespace Scenes.Game.Framework.Creature.Player
 
         public event Action<Vector2> PlayerMoved;
 
-        public event Action<GameObject> AttackedTarget;
+        public event Action<GameObject, float> AttackedTarget;
 
         public PlayerPresenter(PlayerComponent.Factory factory, InventoryManager inventoryManager,
             CreatureHealthManager healthManager) : base(healthManager)
@@ -24,12 +24,13 @@ namespace Scenes.Game.Framework.Creature.Player
             _inventoryManager = inventoryManager;
         }
 
-        public override void CreateComponent(Vector3 position, Transform parent)
+        protected override CreatureComponent CreateComponent(Vector3 position, Transform parent)
         {
             _playerComponent = _factory.Create(position, parent);
             _playerComponent.SwitchedToNextWeapon += PlayerComponentOnSwitchedToNextWeapon;
             _playerComponent.TriedToGetAttackTarget += PlayerComponentOnTriedToGetAttackTarget;
             _playerComponent.TriedToMovePlayer += PlayerComponentOnTriedToMovePlayer;
+            return _playerComponent;
         }
 
         public ITransformGetter GetPlayerTransformGetter() => _playerComponent;
@@ -43,7 +44,9 @@ namespace Scenes.Game.Framework.Creature.Player
         private void PlayerComponentOnTriedToGetAttackTarget()
         {
             if (_currentWeapon.TryGetAttackedObject(out var targetObject))
-                AttackedTarget?.Invoke(targetObject);
+            {
+                AttackedTarget?.Invoke(targetObject, _currentWeapon.DamagePerBullet);
+            }
         }
 
         private void PlayerComponentOnTriedToMovePlayer(Vector2 moveInputValue)

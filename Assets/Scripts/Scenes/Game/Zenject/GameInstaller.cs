@@ -1,6 +1,7 @@
 using Scenes.Game.Framework;
 using Scenes.Game.Framework.Creature;
 using Scenes.Game.Framework.Creature.Containers;
+using Scenes.Game.Framework.Creature.Enemy.Chomper;
 using Scenes.Game.Framework.Creature.Player;
 using Scenes.Game.GameCamera;
 using Scenes.Game.Inventory;
@@ -16,6 +17,7 @@ namespace Scenes.Game.Zenject
     public class GameInstaller : MonoInstaller
     {
         [SerializeField] private PlayerComponent _playerComponentPrefab;
+        [SerializeField] private ChomperComponent _chomperComponentPrefab;
         [SerializeField] private CameraController _cameraController;
         [SerializeField] private InGameUi _inGameUi;
         [SerializeField] private GameView _gameView;
@@ -43,6 +45,14 @@ namespace Scenes.Game.Zenject
                 .FromInstance(_creaturesDataContainer).WhenInjectedInto<HealthSystem>();
             Container.BindInstance(_gameView).WhenInjectedInto<GameViewPresenter>();
             Container.Bind<HealthSystem>().WhenInjectedInto<Creature.ICreatureFactory>();
+
+            InstallChomperBindings();
+        }
+
+        private void InstallChomperBindings()
+        {
+            Container.Bind<ChomperComponent>().FromInstance(_chomperComponentPrefab).WhenInjectedInto<ChomperComponent.Factory>();
+            Container.Bind<ChomperComponent.Factory>().WhenInjectedInto<Creature.ICreatureFactory>();
         }
     }
 }

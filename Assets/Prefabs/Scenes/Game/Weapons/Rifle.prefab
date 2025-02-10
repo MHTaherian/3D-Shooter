@@ -47,6 +47,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _type: 2
+  _damagePerBullet: 3
   _muzzle: {fileID: 4358948834394938561}
   _maxRange: 1000
   _enemyMask:

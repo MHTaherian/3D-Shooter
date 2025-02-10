@@ -77,7 +77,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f96204890403ee14b9f09cc83af6d5e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _playerController: {fileID: 0}
+  _playerComponentPrefab: {fileID: 4189352674361566640, guid: 1a36c58549004e14c9831f0b015f5b55,
+    type: 3}
+  _chomperComponentPrefab: {fileID: 5080516704156681063, guid: 6acebf84f9103b545aafdbe31e825aed,
+    type: 3}
   _cameraController: {fileID: 0}
   _inGameUi: {fileID: 0}
+  _gameView: {fileID: 0}
   _weaponsContainer: {fileID: 11400000, guid: e403cc9673d10584683e88346526e41d, type: 2}
+  _creaturesDataContainer: {fileID: 11400000, guid: 057a64a1579403b43b55626e1a61a8f2,
+    type: 2}

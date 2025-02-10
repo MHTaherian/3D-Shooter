@@ -2,6 +2,7 @@ using System;
 using Scenes.Game.Framework;
 using Scenes.Game.Framework.Creature;
 using Scenes.Game.Framework.Creature.Containers;
+using Scenes.Game.Framework.Creature.Enemy.Chomper;
 using Scenes.Game.Framework.Creature.Player;
 using Scenes.Game.GameCamera;
 using Scenes.Game.Inventory;
@@ -26,7 +27,7 @@ namespace Scenes.Game
             _cameraController = cameraController;
             _gameView = gameView;
             _playerPresenter = _creatureFactory.Create<PlayerPresenter>(CreatureType.Human);
-            _playerPresenter.CreateComponent(gameView.GetPlayerSpawnPosition(), gameView.transform);
+            _playerPresenter.CreateCreatureComponent(gameView.GetPlayerSpawnPosition(), gameView.transform);
             _cameraController.SetTransformToFollow(_playerPresenter.GetPlayerTransformGetter());
             _playerPresenter.AddWeaponToOwnedItems(WeaponType.Rifle);
             _playerPresenter.AddWeaponToOwnedItems(WeaponType.Pistol);
@@ -36,6 +37,9 @@ namespace Scenes.Game
             inGameUi.MoveStickValueUpdated += _playerPresenter.OnMoveInputUpdated;
             inGameUi.AimStickValueUpdated += _playerPresenter.OnAimInputUpdated;
             inGameUi.AimStickTapped += _playerPresenter.OnAimStickTapped;
+
+            var chomperPresenter = _creatureFactory.Create<ChomperPresenter>(CreatureType.Chomper);
+            chomperPresenter.CreateCreatureComponent(gameView.GetChomperSpawnPosition(), gameView.transform);
         }
 
         private void OnPlayerMoved(Vector2 moveInput)
@@ -44,9 +48,13 @@ namespace Scenes.Game
             _cameraController.RotateFrameRateIndependently(moveInput.x);
         }
 
-        private void PlayerPresenterOnAttackedTarget(GameObject target)
+        private void PlayerPresenterOnAttackedTarget(GameObject target, float damagePerBullet)
         {
             Debug.Log($"Attacked {target}");
+            if (target.TryGetComponent(out CreatureComponent creatureComponent))
+            {
+                creatureComponent.OnGotAttacked(damagePerBullet);
+            }
         }
     }
 }

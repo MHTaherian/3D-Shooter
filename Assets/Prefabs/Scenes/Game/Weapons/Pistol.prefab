@@ -47,11 +47,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _type: 1
+  _damagePerBullet: 5
   _muzzle: {fileID: 8653522140861366990}
   _maxRange: 1000
   _enemyMask:
     serializedVersion: 2
     m_Bits: 4294967295
+  _attackRateMultiplier: 1
 --- !u!1 &8470751890468416726
 GameObject:
   m_ObjectHideFlags: 0

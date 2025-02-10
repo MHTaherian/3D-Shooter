@@ -5,7 +5,7 @@ using Zenject;
 
 namespace Scenes.Game.Framework.Creature.Player
 {
-    public class PlayerComponent : MonoBehaviour, ITransformGetter
+    public class PlayerComponent : CreatureComponent, ITransformGetter
     {
         [SerializeField] private CharacterController _characterController;
         [SerializeField] private float _moveSpeed;
@@ -177,7 +177,9 @@ namespace Scenes.Game.Framework.Creature.Player
         }
 
         #endregion
-        
+
+        #region [Factory]
+
         public class Factory : IFactory<Vector3, Transform, PlayerComponent>
         {
             private readonly DiContainer _container;
@@ -195,6 +197,8 @@ namespace Scenes.Game.Framework.Creature.Player
                     Quaternion.identity, parent);
             }
         }
+
+        #endregion
     }
 
     [Serializable]
