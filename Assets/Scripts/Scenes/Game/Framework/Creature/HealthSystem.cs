@@ -1,7 +1,6 @@
-﻿using Scenes.Game.Framework.Creature;
-using Scenes.Game.Framework.Creature.Containers;
+﻿using Scenes.Game.Framework.Creature.Containers;
 
-namespace Scenes.Game.Framework
+namespace Scenes.Game.Framework.Creature
 {
     public class HealthSystem
     {

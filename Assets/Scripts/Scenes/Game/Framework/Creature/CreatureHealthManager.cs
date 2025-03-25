@@ -1,4 +1,5 @@
 ﻿using UnityEditor.Experimental;
+using UnityEngine;
 
 namespace Scenes.Game.Framework.Creature
 {
@@ -19,7 +20,7 @@ namespace Scenes.Game.Framework.Creature
 
         public void ChangeHealth(float amount)
         {
-            if (amount == 0)
+            if (amount == 0 || _health <= 0)
                 return;
             if (_maxHealth >= _health + amount)
             {

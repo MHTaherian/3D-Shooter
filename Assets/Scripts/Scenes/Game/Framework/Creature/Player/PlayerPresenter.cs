@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Scenes.Game.Framework.Creature.Containers;
 using Scenes.Game.Inventory;
 using Scenes.Game.Weapons;
 using UnityEngine;
@@ -18,7 +19,7 @@ namespace Scenes.Game.Framework.Creature.Player
         public event Action<GameObject, float> AttackedTarget;
 
         public PlayerPresenter(PlayerComponent.Factory factory, InventoryManager inventoryManager,
-            CreatureHealthManager healthManager) : base(healthManager)
+            CreatureHealthManager healthManager) : base(healthManager, CreatureType.Human)
         {
             _factory = factory;
             _inventoryManager = inventoryManager;

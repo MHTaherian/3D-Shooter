@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Scenes.Game.Framework.Creature.Containers;
+using UnityEngine;
 
 namespace Scenes.Game.Framework.Creature.Enemy.Chomper
 {
@@ -8,7 +9,7 @@ namespace Scenes.Game.Framework.Creature.Enemy.Chomper
         private ChomperComponent _chomperComponent;
 
         public ChomperPresenter(ChomperComponent.Factory factory, CreatureHealthManager healthManager) : base(
-            healthManager)
+            healthManager, CreatureType.Chomper)
         {
             _factory = factory;
         }

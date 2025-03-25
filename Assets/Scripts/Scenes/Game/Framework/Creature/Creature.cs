@@ -4,25 +4,29 @@ using Scenes.Game.Framework.Creature.Enemy.Chomper;
 using Scenes.Game.Framework.Creature.Player;
 using Scenes.Game.Inventory;
 using UnityEngine;
-using Zenject;
 
 namespace Scenes.Game.Framework.Creature
 {
     public abstract class Creature
     {
+        private readonly CreatureType _type;
+
+        public CreatureType Type => _type;
+
         private readonly CreatureHealthManager _healthManager;
         public CreatureComponent CreatureComponent;
 
-        protected Creature(CreatureHealthManager healthManager)
+        protected Creature(CreatureHealthManager healthManager, CreatureType type)
         {
             _healthManager = healthManager;
+            _type = type;
         }
 
         public void CreateCreatureComponent(Vector3 position, Transform parent)
         {
             CreatureComponent = CreateComponent(position, parent);
             CreatureComponent.GotAttacked += CreatureComponentOnGotAttacked;
-            _healthManager.OnHealthChanged += HealthManagerOnOnHealthChanged;
+            _healthManager.OnHealthChanged += HealthManagerOnHealthChanged;
         }
 
         private void CreatureComponentOnGotAttacked(float amount)
@@ -30,13 +34,14 @@ namespace Scenes.Game.Framework.Creature
             _healthManager.ChangeHealth(-amount);
         }
 
-        private void HealthManagerOnOnHealthChanged(float healthChangeAmount)
+        private void HealthManagerOnHealthChanged(float healthChangeAmount)
         {
             CreatureComponent.ChangeHealth(healthChangeAmount);
             Debug.Log(
                 $"{CreatureComponent.name} health change by {healthChangeAmount} and health is {_healthManager.Health} now");
-            if (_healthManager.Health < 0)
+            if (_healthManager.Health <= 0)
             {
+                CreatureComponent.Die();
             }
         }
 
@@ -61,7 +66,7 @@ namespace Scenes.Game.Framework.Creature
             public T Create<T>(CreatureType creatureType) where T : Creature
             {
                 var healthManager = _healthSystem.CreateHealthManagerForCreature(creatureType);
-                
+
                 return creatureType switch
                 {
                     CreatureType.Human => new PlayerPresenter(_playerComponentFactory, _inventoryManager, healthManager)

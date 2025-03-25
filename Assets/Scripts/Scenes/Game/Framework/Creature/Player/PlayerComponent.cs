@@ -15,8 +15,7 @@ namespace Scenes.Game.Framework.Creature.Player
         [Space] [Header("WeaponAttachSlots")] [SerializeField]
         private WeaponTypeWithSlot[] _weaponTypesWithSlots;
 
-        [Space] [Header("Animation")] [SerializeField]
-        private Animator _animator;
+        [Space] [Header("Animation")]
         [SerializeField] private AnimatorOverrideController _pistolAnimatorOverride;
         [SerializeField] private AnimatorOverrideController _rifleAnimatorOverride;
         
@@ -54,7 +53,7 @@ namespace Scenes.Game.Framework.Creature.Player
         public void OnAimInputUpdated(Vector2 inputValue)
         {
             _aimInputValue = inputValue;
-            _animator.SetBool(AttackingAnimatorProperty, inputValue.sqrMagnitude > 0);
+            Animator?.SetBool(AttackingAnimatorProperty, inputValue.sqrMagnitude > 0);
         }
 
         private void Update()
@@ -67,8 +66,8 @@ namespace Scenes.Game.Framework.Creature.Player
             // and tells us the ratio of moveDirection vector to transform.forward
             var forwardMovementRatio = Vector3.Dot(moveDirection, transform.forward);
             var rightMovementRatio = Vector3.Dot(moveDirection, transform.right);
-            _animator.SetFloat(ForwardSpeedAnimationProperty, forwardMovementRatio);
-            _animator.SetFloat(RightSpeedAnimationProperty, rightMovementRatio);
+            Animator?.SetFloat(ForwardSpeedAnimationProperty, forwardMovementRatio);
+            Animator?.SetFloat(RightSpeedAnimationProperty, rightMovementRatio);
         }
 
         #region Rotation
@@ -93,7 +92,7 @@ namespace Scenes.Game.Framework.Creature.Player
 
             _currentAnimatorTurnSpeed = Mathf.Lerp(_currentAnimatorTurnSpeed, currentFinalTurnSpeed,
                 Time.deltaTime * _animatorTurnSpeed);
-            _animator.SetFloat(TurnSpeedAnimatorProperty, _currentAnimatorTurnSpeed);
+            Animator?.SetFloat(TurnSpeedAnimatorProperty, _currentAnimatorTurnSpeed);
         }
 
         private Quaternion RotatePlayer(Vector3 aimDirection)
@@ -142,7 +141,7 @@ namespace Scenes.Game.Framework.Creature.Player
 
         public void StartSwitchingToNextWeapon()
         {
-            _animator.SetTrigger(WeaponSwitchAnimatorProperty);
+            Animator?.SetTrigger(WeaponSwitchAnimatorProperty);
         }
 
         // Animator Event Function
@@ -172,8 +171,8 @@ namespace Scenes.Game.Framework.Creature.Player
         
         public void SetWeapon(WeaponType weaponType, float attackRateMultiplier)
         {
-            _animator.runtimeAnimatorController = GetAnimatorOverrideController(weaponType);
-            _animator.SetFloat(AttackRateMultiplier, attackRateMultiplier);
+            Animator.runtimeAnimatorController = GetAnimatorOverrideController(weaponType);
+            Animator.SetFloat(AttackRateMultiplier, attackRateMultiplier);
         }
 
         #endregion

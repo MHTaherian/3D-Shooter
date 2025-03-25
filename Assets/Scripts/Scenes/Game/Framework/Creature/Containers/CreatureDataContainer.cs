@@ -10,17 +10,17 @@ namespace Scenes.Game.Framework.Creature.Containers
         [SerializeField] private CreatureData[] CreaturesData;
         [SerializeField] private CreatureData DefaultCreatureData;
 
-        public CreatureData GetCreatureData(CreatureType creatureType)
-        {
-            CreatureData? data = CreaturesData.FirstOrDefault(d => d.CreatureType == creatureType);
-            return data ?? DefaultCreatureData;
-        }
-
-        public CreatureHealthManager CreateHealthManager(CreatureType creatureType)
+        private CreatureData GetCreatureData(CreatureType creatureType)
         {
             var data = CreaturesData.Any(d => d.CreatureType == creatureType)
                 ? CreaturesData.First(d => d.CreatureType == creatureType)
                 : DefaultCreatureData;
+            return data;
+        }
+
+        public CreatureHealthManager CreateHealthManager(CreatureType creatureType)
+        {
+            var data = GetCreatureData(creatureType);
 
             return new CreatureHealthManager(data.MaxHealth);
         }
