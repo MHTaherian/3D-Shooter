@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Scenes.Game.UI.InGameUI
 {
-    public class InGameUi : MonoBehaviour
+    public class InGameUi : MonoBehaviour, ITransformGetter
     {
         [SerializeField] private Joystick _moveJoyStick;
         [SerializeField] private Joystick _aimJoyStick;
@@ -39,6 +39,11 @@ namespace Scenes.Game.UI.InGameUI
             _moveJoyStick.OnInputValueUpdated -= OnMoveJoystickValueUpdated;
             _aimJoyStick.OnInputValueUpdated -= OnAimJoystickValueUpdated;
             _aimJoyStick.OnInputTapped -= OnAimJoyStickInputTapped;
+        }
+
+        public Transform GetTransform()
+        {
+            return transform;
         }
     }
 }

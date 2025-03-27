@@ -1,4 +1,5 @@
 ﻿using System;
+using Scenes.Game.UI.InGameUI;
 using Scenes.Game.Weapons;
 using UnityEngine;
 using Zenject;
@@ -40,22 +41,13 @@ namespace Scenes.Game.Framework.Creature.Player
         public event Action<Vector2> TriedToMovePlayer;
         public event Action<GameObject> Attacked;
 
+        #region [Event Functions]
+
         private void Start()
         {
             _mainCamera = Camera.main;
         }
         
-        public void OnMoveInputUpdated(Vector2 inputValue)
-        {
-            _moveInputValue = inputValue;
-        }
-
-        public void OnAimInputUpdated(Vector2 inputValue)
-        {
-            _aimInputValue = inputValue;
-            Animator?.SetBool(AttackingAnimatorProperty, inputValue.sqrMagnitude > 0);
-        }
-
         private void Update()
         {
             var moveDirection = TryMovePlayerBasedOnMoveStickInputValue();
@@ -68,6 +60,19 @@ namespace Scenes.Game.Framework.Creature.Player
             var rightMovementRatio = Vector3.Dot(moveDirection, transform.right);
             Animator?.SetFloat(ForwardSpeedAnimationProperty, forwardMovementRatio);
             Animator?.SetFloat(RightSpeedAnimationProperty, rightMovementRatio);
+        }
+
+        #endregion
+
+        public void OnMoveInputUpdated(Vector2 inputValue)
+        {
+            _moveInputValue = inputValue;
+        }
+
+        public void OnAimInputUpdated(Vector2 inputValue)
+        {
+            _aimInputValue = inputValue;
+            Animator?.SetBool(AttackingAnimatorProperty, inputValue.sqrMagnitude > 0);
         }
 
         #region Rotation

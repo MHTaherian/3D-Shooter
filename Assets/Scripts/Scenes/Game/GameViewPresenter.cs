@@ -3,6 +3,7 @@ using Scenes.Game.Framework;
 using Scenes.Game.Framework.Creature;
 using Scenes.Game.Framework.Creature.Containers;
 using Scenes.Game.Framework.Creature.Enemy.Chomper;
+using Scenes.Game.Framework.Creature.Managers;
 using Scenes.Game.Framework.Creature.Player;
 using Scenes.Game.GameCamera;
 using Scenes.Game.Inventory;
@@ -16,17 +17,17 @@ namespace Scenes.Game
     public class GameViewPresenter
     {
         private PlayerPresenter _playerPresenter;
-        private readonly Creature.ICreatureFactory _creatureFactory;
+        private readonly CreaturesManager _creaturesManager;
         private CameraController _cameraController;
         private GameView _gameView;
         
-        public GameViewPresenter(Creature.ICreatureFactory creatureFactory, CameraController cameraController,
+        public GameViewPresenter(CreaturesManager creaturesManager, CameraController cameraController,
             InGameUi inGameUi, GameView gameView)
         {
-            _creatureFactory = creatureFactory;
+            _creaturesManager = creaturesManager;
             _cameraController = cameraController;
             _gameView = gameView;
-            _playerPresenter = _creatureFactory.Create<PlayerPresenter>(CreatureType.Human);
+            _playerPresenter = _creaturesManager.CreateCreature<PlayerPresenter>(CreatureType.Human);
             _playerPresenter.CreateCreatureComponent(gameView.GetPlayerSpawnPosition(), gameView.transform);
             _cameraController.SetTransformToFollow(_playerPresenter.GetPlayerTransformGetter());
             _playerPresenter.AddWeaponToOwnedItems(WeaponType.Rifle);
@@ -38,7 +39,7 @@ namespace Scenes.Game
             inGameUi.AimStickValueUpdated += _playerPresenter.OnAimInputUpdated;
             inGameUi.AimStickTapped += _playerPresenter.OnAimStickTapped;
 
-            var chomperPresenter = _creatureFactory.Create<ChomperPresenter>(CreatureType.Chomper);
+            var chomperPresenter = _creaturesManager.CreateCreature<ChomperPresenter>(CreatureType.Chomper);
             chomperPresenter.CreateCreatureComponent(gameView.GetChomperSpawnPosition(), gameView.transform);
         }
 

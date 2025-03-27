@@ -84,6 +84,8 @@ MonoBehaviour:
   _cameraController: {fileID: 0}
   _inGameUi: {fileID: 0}
   _gameView: {fileID: 0}
+  _healthBarPrefab: {fileID: 8821206597756931737, guid: 345389f20f7d694479fc5e08a621b1dd,
+    type: 3}
   _weaponsContainer: {fileID: 11400000, guid: e403cc9673d10584683e88346526e41d, type: 2}
   _creaturesDataContainer: {fileID: 11400000, guid: 057a64a1579403b43b55626e1a61a8f2,
     type: 2}
